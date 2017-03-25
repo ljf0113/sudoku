@@ -13,10 +13,11 @@ new Vue({
 			this.sudoku[row][col].background = true;
 		},
 		changeNum: function(index) {
+			var self = this;
 			this.sudoku[this.select[0]][this.select[1]].num = typeof index === 'number' ? index : '';
 			this.sudoku.forEach(function(arr, row) {
 				arr.forEach(function(obj, col) {
-					this.sudoku[row][col].colorRed = checkArr.call(this, obj.num, row, col);
+					self.sudoku[row][col].colorRed = checkArr.call(self, obj.num, row, col);
 				});
 			});
 
