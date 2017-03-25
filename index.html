@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+	<title>Document</title>
+	<style type="text/css">
+		*{
+			padding: 0;
+			margin: 0;
+		}
+		body{
+			background: #FFFFCC;
+		}
+		.sudoku{
+			width: 90vw;
+			height: 90vw;
+			margin: 7vw auto;
+			border-collapse: collapse;
+			text-align: center;
+			outline: 1px solid #333;
+			background: #FFFF99;
+		}
+		.sudoku td{
+			font-size: 5vw;
+			color: #444;
+			cursor: pointer;
+		}
+		.sudoku tr:nth-child(3n):nth-last-child(n+2){
+			border-bottom: 1px solid #666;
+		}
+		.sudoku td:nth-child(3n):nth-last-child(n+2){
+			border-right: 1px solid #666;
+		}
+		.sudoku .colorRed{
+			color: #FF6666;
+		}
+		.sudoku .backgroundChange{
+			background: #CCCCFF;
+		}
+		.keyboard{
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+			margin: 0 auto;
+			width: 90vw;
+		}
+		.keyboard .kRow{
+			display: flex;
+			justify-content: space-between;
+		}
+		.keyboard .kRow:last-child{
+			margin-top: 4vw;
+		}
+		.keyboard .kCol{
+			width: 13vw;
+			line-height: 13vw;
+			border-radius: 3vw;
+			background: #CCFF99;
+			text-align: center;
+			font-size: 5vw;
+			color: #333;
+		}
+		.ctrl{
+			margin-top: 7vw;
+			display: flex;
+			justify-content: space-around;
+		}
+		.ctrl div{
+			padding: 2vw 4vw;
+			font-size: 4vw;
+			color: #333;
+			border-radius: 2vw;
+			background: #FFCC99;
+		}
+	</style>
+	<script type="text/javascript" src="createSudoku.js"></script>
+	<script type="text/javascript" src="vue.js"></script>
+</head>
+<body>
+	<div id="app">
+		<table class="sudoku">
+			<tr v-for="row in 9">
+				<td v-for="col in 9"
+					:class="{colorRed:sudoku[row - 1][col - 1].colorRed,backgroundChange:sudoku[row - 1][col - 1].background}"
+					@touchstart="backgroundChange(row-1, col-1)">
+					{{sudoku[row - 1][col - 1].num}}
+				</td>
+			</tr>
+		</table>
+		<div class="keyboard">
+			<div class="kRow" v-for="row in 2">
+				<p class="kCol" v-for="col in 5" @click="changeNum(row * col < 10 ? (row - 1) * 5 + col : 'X')">{{row * col < 10 ? (row - 1) * 5 + col : 'X'}}</p>
+			</div>
+		</div>
+		<div class="ctrl">
+			<div @click="load" :disabled="local">Load</div>
+			<div @click="save">Save</div>
+			<div>提示</div>
+			<div >验证</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="main.js"></script>
+</body>
+</html>
