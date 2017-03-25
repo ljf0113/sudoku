@@ -1,10 +1,10 @@
 function getArr() {
 
-	let arr = [];
+	var arr = [];
 
-	let dereplication = function(orgArr, tarArr, row, col) {
+	var dereplication = function(orgArr, tarArr, row, col) {
 		var tarArr = tarArr.slice();
-		let index = tarArr.indexOf(orgArr[row][col]);
+		var index = tarArr.indexOf(orgArr[row][col]);
 		if (~index) {
 			tarArr.splice(index, 1);
 		}
@@ -17,13 +17,13 @@ function getArr() {
 	}
 
 	function pushIndex(row) {
-		let num = 30;
+		var num = 30;
 
 		while (num) {
 			num--;
-			for (let i = 0; i < 9; i++) {
-				let randomArr = getRandomArr(row, i);
-				let len = randomArr.length;
+			for (var i = 0; i < 9; i++) {
+				var randomArr = getRandomArr(row, i);
+				var len = randomArr.length;
 
 				if (!len) {
 					break;
@@ -41,15 +41,15 @@ function getArr() {
 	}
 
 	function getRandomArr(row, col) {
-		let num = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-		let len = arr.length - 1;
+		var num = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+		var len = arr.length - 1;
 
 		if (col > 0) {
-			for (let i = 0; i < col; i++) {
+			for (var i = 0; i < col; i++) {
 				num = dereplication(num, row, i);
 			}
 		}
-		for (let i = 0; i < len; i++) {
+		for (var i = 0; i < len; i++) {
 			num = dereplication(num, i, col);
 		}
 		if (row % 3 !== 0) {
