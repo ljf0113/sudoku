@@ -3,11 +3,12 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no" />
-	<title>Document</title>
+	<title>Sudoku</title>
 	<style type="text/css">
 		*{
 			padding: 0;
 			margin: 0;
+			user-select: none;
 		}
 		body{
 			background: #FFFFCC;
@@ -24,7 +25,7 @@
 		.sudoku td{
 			font-size: 5vw;
 			color: #444;
-			cursor: pointer;
+			text-shadow: 1px 1px 1px #ccc;
 		}
 		.sudoku tr:nth-child(3n):nth-last-child(n+2){
 			border-bottom: 1px solid #666;
@@ -34,9 +35,13 @@
 		}
 		.sudoku .colorRed{
 			color: #FF6666;
+			text-shadow: 1px 1px 1px #666;
 		}
 		.sudoku .backgroundChange{
 			background: #CCCCFF;
+		}
+		.sudoku .tips{
+			color: #F9C;
 		}
 		.keyboard{
 			display: flex;
@@ -60,6 +65,9 @@
 			text-align: center;
 			font-size: 5vw;
 			color: #333;
+			box-shadow: 1px 1px 3px #666;
+			text-shadow: 0 .03em .03em rgba(255, 255, 255, .8);
+			background-image: linear-gradient(to right bottom, rgba(255, 255, 255, .3), transparent);
 		}
 		.ctrl{
 			margin-top: 7vw;
@@ -72,6 +80,16 @@
 			color: #333;
 			border-radius: 2vw;
 			background: #FFCC99;
+			box-shadow: 1px 1px 3px #666;
+			text-shadow: 0 .03em .03em rgba(255, 255, 255, .8);
+			background-image: linear-gradient(to right bottom, rgba(255, 255, 255, .3), transparent);
+		}
+		.ctrl .disable{
+			background: #CCCCFF;
+		}
+		#app .down{
+			box-shadow: 1px 1px 10px #666 inset;
+			background-image: linear-gradient(to right bottom, rgba(200, 200, 200, .2), transparent);
 		}
 	</style>
 	<script type="text/javascript" src="createSudoku.js"></script>
@@ -82,7 +100,10 @@
 		<table class="sudoku">
 			<tr v-for="row in 9">
 				<td v-for="col in 9"
-					:class="{colorRed:sudoku[row - 1][col - 1].colorRed,backgroundChange:sudoku[row - 1][col - 1].background}"
+					:class="{colorRed: sudoku[row - 1][col - 1].colorRed,
+					         backgroundChange: sudoku[row - 1][col - 1].background,
+					         tips: sudoku[row - 1][col - 1].tips
+					}"
 					@touchstart="backgroundChange(row-1, col-1)">
 					{{sudoku[row - 1][col - 1].num}}
 				</td>
@@ -90,14 +111,14 @@
 		</table>
 		<div class="keyboard">
 			<div class="kRow" v-for="row in 2">
-				<p class="kCol" v-for="col in 5" @click="changeNum(row * col < 10 ? (row - 1) * 5 + col : 'X')">{{row * col < 10 ? (row - 1) * 5 + col : 'X'}}</p>
+				<p class="kCol" v-for="col in 5" @touchstart="changeNum(row * col < 10 ? (row - 1) * 5 + col : 'X', $event)" @touchend="removeClass($event)">{{row * col < 10 ? (row - 1) * 5 + col : 'X'}}</p>
 			</div>
 		</div>
 		<div class="ctrl">
-			<div @click="load" :disabled="local">Load</div>
-			<div @click="save">Save</div>
-			<div>提示</div>
-			<div >验证</div>
+			<div @touchstart="load($event)"  @touchend="removeClass($event)" :class="{disable:local}">Load</div>
+			<div @touchstart="save($event)" @touchend="removeClass($event)">Save</div>
+			<div @touchstart="getTips($event)" @touchend="removeClass($event)">提示</div>
+			<div @touchstart="check($event)">验证</div>
 		</div>
 	</div>
 	<script type="text/javascript" src="main.js"></script>

@@ -2,9 +2,12 @@ new Vue({
 	el: '#app',
 	data: {
 		sudoku: [],
+		tips: [],
 		select: [0, 0],
 		squareArr: [],
-		local: !!localStorage.sudoku,
+		local: !localStorage.sudoku,
+		wrong: 0,
+		difficulty: 15,
 	},
 	methods: {
 		backgroundChange: function(row, col) {
@@ -12,12 +15,17 @@ new Vue({
 			this.select = [row, col];
 			this.sudoku[row][col].background = true;
 		},
-		changeNum: function(index) {
+		changeNum: function(index, e) {
+			e.target.classList.add('down');
 			var self = this;
+			this.wrong = 0;
+			this.sudoku[this.select[0]][this.select[1]].tips = false;
 			this.sudoku[this.select[0]][this.select[1]].num = typeof index === 'number' ? index : '';
 			this.sudoku.forEach(function(arr, row) {
 				arr.forEach(function(obj, col) {
-					self.sudoku[row][col].colorRed = checkArr.call(self, obj.num, row, col);
+					var res = checkArr.call(self, obj.num, row, col);
+					self.sudoku[row][col].colorRed = res;
+					self.wrong += res;
 				});
 			});
 
@@ -42,23 +50,81 @@ new Vue({
 				return false;
 			};
 		},
-		load: function() {
-			this.sudoku = JSON.parse(localStorage.sudoku);
+		load: function(e) {
+			e.target.classList.add('down');
+			var res = confirm('→_→ 确定重开之前的游戏吗？');
+			if (res) {
+				this.sudoku = JSON.parse(localStorage.sudoku);
+				this.difficulty = Number(localStorage.difficulty);
+			}
 		},
-		save: function() {
+		save: function(e) {
+			e.target.classList.add('down');
 			localStorage.sudoku = JSON.stringify(this.sudoku);
+			localStorage.difficulty = this.difficulty;
+		},
+		check: function() {
+			var all = 0;
+			var res = false;
+			this.sudoku.forEach(function(arr) {
+				arr.forEach(function(obj) {
+					all += !!obj.num;
+				})
+			});
+			if (this.wrong === 0 && all === 81) {
+				res = confirm('(^_^)∠※ 恭喜过关~开始新一局游戏吗？');
+			} else {
+				alert('╮(╯_╰)╭ 你还没过关呢');
+			}
+			if (res) {
+				if (this.difficulty < 60) {
+					this.difficulty += 3;
+					localStorage.difficulty = this.difficulty;
+				}
+				this.newGame();
+			}
+		},
+		getTips: function(e) {
+			e.target.classList.add('down');
+			var index = this.sudoku[this.select[0]][this.select[1]];
+			if (!index.num) {
+				index.num = this.tips[this.select[0]][this.select[1]];
+				index.tips = true;
+			}
+		},
+		removeClass: function(e) {
+			e.target.classList.remove('down');
+		},
+		newGame: function() {
+			var clean = [],
+				num,
+				row,
+				col,
+				sudokuArr = getArr();
+			this.difficulty = localStorage.difficulty ? Number(localStorage.difficulty) : 15;
+			this.tips = sudokuArr.slice();
+			this.sudoku = sudokuArr.map(function(arr) {
+				return arr.map(function(num) {
+					return {
+						num: num,
+						colorRed: false,
+						background: false,
+						tops: false,
+					}
+				})
+			});
+			while (clean.length !== this.difficulty) {
+				num = ~~(Math.random() * 81);
+				if (!~clean.indexOf(num)) {
+					clean.push(num);
+					row = ~~(num / 9);
+					col = num - row * 9;
+					this.sudoku[row][col].num = '';
+				}
+			}
 		}
 	},
 	beforeMount: function() {
-		var sudokuArr = getArr().map(function(arr) {
-			return arr.map(function(num) {
-				return {
-					num: num,
-					colorRed: false,
-					background: false,
-				}
-			})
-		});
-		this.sudoku = sudokuArr;
+		this.newGame();
 	},
 })
