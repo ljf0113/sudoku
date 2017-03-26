@@ -115,7 +115,7 @@
 			</div>
 		</div>
 		<div class="ctrl">
-			<div @touchstart="load($event)"  @touchend="removeClass($event)" :class="{disable:local}">Load</div>
+			<div @touchstart="load($event)" :class="{disable:local}">Load</div>
 			<div @touchstart="save($event)" @touchend="removeClass($event)">Save</div>
 			<div @touchstart="getTips($event)" @touchend="removeClass($event)">提示</div>
 			<div @touchstart="check($event)">验证</div>

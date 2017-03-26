@@ -52,37 +52,46 @@ new Vue({
 		},
 		load: function(e) {
 			e.target.classList.add('down');
-			var res = confirm('→_→ 确定重开之前的游戏吗？');
-			if (res) {
-				this.sudoku = JSON.parse(localStorage.sudoku);
-				this.difficulty = Number(localStorage.difficulty);
-			}
+			var self = this;
+			setTimeout(function() {
+				e.target.classList.remove('down');
+				var res = confirm('→_→ 确定重开之前的游戏吗？');
+				if (res) {
+					self.sudoku = JSON.parse(localStorage.sudoku);
+					self.difficulty = Number(localStorage.difficulty);
+				}
+			})
 		},
 		save: function(e) {
 			e.target.classList.add('down');
 			localStorage.sudoku = JSON.stringify(this.sudoku);
 			localStorage.difficulty = this.difficulty;
 		},
-		check: function() {
+		check: function(e) {
 			var all = 0;
 			var res = false;
+			var self = this;
+			e.target.classList.add('down');
 			this.sudoku.forEach(function(arr) {
 				arr.forEach(function(obj) {
 					all += !!obj.num;
 				})
 			});
-			if (this.wrong === 0 && all === 81) {
-				res = confirm('(^_^)∠※ 恭喜过关~开始新一局游戏吗？');
-			} else {
-				alert('╮(╯_╰)╭ 你还没过关呢');
-			}
-			if (res) {
-				if (this.difficulty < 60) {
-					this.difficulty += 3;
-					localStorage.difficulty = this.difficulty;
+			setTimeout(function() {
+				e.target.classList.remove('down');
+				if (self.wrong === 0 && all === 81) {
+					res = confirm('(^_^)∠※ 恭喜过关~开始新一局游戏吗？');
+				} else {
+					alert('╮(╯_╰)╭ 你还没过关呢');
 				}
-				this.newGame();
-			}
+				if (res) {
+					if (self.difficulty < 60) {
+						self.difficulty += 3;
+						localStorage.difficulty = self.difficulty;
+					}
+					self.newGame();
+				}
+			})
 		},
 		getTips: function(e) {
 			e.target.classList.add('down');
