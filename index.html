@@ -8,7 +8,7 @@
 		*{
 			padding: 0;
 			margin: 0;
-			--webkit-user-select: none;
+			-webkit-user-select: none;
 			user-select: none;
 		}
 		body{
@@ -22,6 +22,7 @@
 			text-align: center;
 			outline: 1px solid #333;
 			background: #FFFF99;
+			background-image: linear-gradient(to right bottom, rgba(255, 255, 255, .2), transparent);
 		}
 		.sudoku td{
 			font-size: 5vw;
@@ -36,6 +37,10 @@
 		}
 		.sudoku .colorRed{
 			color: #FF6666;
+			text-shadow: 1px 1px 1px #666;
+		}
+		.sudoku .same{
+			color: #CCFF99;
 			text-shadow: 1px 1px 1px #666;
 		}
 		.sudoku .backgroundChange{
@@ -103,9 +108,10 @@
 				<td v-for="col in 9"
 					:class="{colorRed: sudoku[row - 1][col - 1].colorRed,
 					         backgroundChange: sudoku[row - 1][col - 1].background,
-					         tips: sudoku[row - 1][col - 1].tips
+					         tips: sudoku[row - 1][col - 1].tips,
+					         same: sudoku[row - 1][col - 1].same
 					}"
-					@touchstart="backgroundChange(row-1, col-1)">
+					@touchstart="selectItem(row-1, col-1)">
 					{{sudoku[row - 1][col - 1].num}}
 				</td>
 			</tr>

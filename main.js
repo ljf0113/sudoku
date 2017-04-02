@@ -1,19 +1,26 @@
-new Vue({
+var vm = new Vue({
 	el: '#app',
 	data: {
 		sudoku: [],
 		tips: [],
 		select: [0, 0],
-		squareArr: [],
 		local: !localStorage.sudoku,
 		wrong: 0,
 		difficulty: 15,
 	},
 	methods: {
-		backgroundChange: function(row, col) {
+		selectItem: function(row, col) {
 			this.sudoku[this.select[0]][this.select[1]].background = false;
 			this.select = [row, col];
 			this.sudoku[row][col].background = true;
+			var num = this.sudoku[row][col].num;
+			if (num !== '') {
+				this.sudoku.forEach(function(rows) {
+					rows.forEach(function(obj) {
+						obj.same = obj.num === num ? true : false;
+					})
+				})
+			}
 		},
 		changeNum: function(index, e) {
 			e.target.classList.add('down');
@@ -58,6 +65,7 @@ new Vue({
 				var res = confirm('→_→ 确定重开之前的游戏吗？');
 				if (res) {
 					self.sudoku = JSON.parse(localStorage.sudoku);
+					self.tips = JSON.parse(localStorage.tips);
 					self.difficulty = Number(localStorage.difficulty);
 				}
 			})
@@ -65,6 +73,7 @@ new Vue({
 		save: function(e) {
 			e.target.classList.add('down');
 			localStorage.sudoku = JSON.stringify(this.sudoku);
+			localStorage.tips = JSON.stringify(this.tips);
 			localStorage.difficulty = this.difficulty;
 		},
 		check: function(e) {
@@ -119,6 +128,7 @@ new Vue({
 						colorRed: false,
 						background: false,
 						tops: false,
+						same: false
 					}
 				})
 			});
@@ -135,5 +145,5 @@ new Vue({
 	},
 	beforeMount: function() {
 		this.newGame();
-	},
+	}
 })
