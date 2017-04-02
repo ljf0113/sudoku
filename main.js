@@ -14,13 +14,11 @@ var vm = new Vue({
 			this.select = [row, col];
 			this.sudoku[row][col].background = true;
 			var num = this.sudoku[row][col].num;
-			if (num !== '') {
-				this.sudoku.forEach(function(rows) {
-					rows.forEach(function(obj) {
-						obj.same = obj.num === num ? true : false;
-					})
+			this.sudoku.forEach(function(rows) {
+				rows.forEach(function(obj) {
+					obj.same = num !== '' && obj.num === num ? true : false;
 				})
-			}
+			})
 		},
 		changeNum: function(index, e) {
 			e.target.classList.add('down');
